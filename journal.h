@@ -5,7 +5,8 @@
 #include <map>
 #include <exception>
 
-
+#define RESET   "\033[0m"
+#define GREEN   "\033[32m"      /* Green */
 
 struct Student {
     static const char delimiter = '\n';

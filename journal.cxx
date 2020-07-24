@@ -3,20 +3,17 @@ using namespace std;
 
 std::string mdel = ", ";
 bool ui = false;
+fstream ifs, ofs;
 
 int main(int argc, char** argv) {
     Journal jr; 
-    if (argc > 1) {
-        fstream ifs(argv[1], fstream::in);
-        jr.unpack(ifs);
-        ifs.close();
-    }
     ui = true;
     help_message();
     while (ui) {
         interact(jr);
     } 
-    if (argc > 1) {
+    if (ifs) ifs.close();
+    if (ofs) {
         fstream ofs(argv[1], fstream::out);
         jr.pack(ofs);
         ofs.close();
@@ -30,10 +27,13 @@ void help_message() {
     cout << "2. add student" << endl;
     cout << "3. add group" << endl;
     cout << "4. add exam" << endl;
-    cout << "5. exit" << endl;
+    cout << "5. load file" << endl;
+    cout << "6. save file" << endl;
+    cout << "7. exit" << endl;
 }
 
 void interact(Journal& jr) {
+    cout << "command: ";
     char c;
     cin >> c;    
     bool ok = true;
@@ -43,7 +43,7 @@ void interact(Journal& jr) {
             break;
         }
         case '2': {
-            cout << "enter group name:" << endl; 
+            cout << "enter group name: "; 
             string group_name;
             cin >> group_name;
             Student st;
@@ -56,23 +56,43 @@ void interact(Journal& jr) {
             break;
         }
         case '3': {
-            cout << "enter group name:" << endl; 
+            cout << "enter group name: "; 
             string group_name;
             cin >> group_name;
             jr.addGroup(group_name);
             break;
         }
         case '4': {
-            cout << "enter group name:" << endl; 
+            cout << "enter group name: "; 
             string group_name;
             cin >> group_name;
-            cout << "enter exam name:" << endl; 
+            cout << "enter exam name: "; 
             string exam_name;
             cin >> exam_name;
             jr.makeExam(group_name, exam_name);
             break;
         }
         case '5': {
+            cout << "enter file name: ";
+            string fn;
+            cin >> fn;
+            ifs.open(fn, fstream::in);
+            ui = false;
+            jr.unpack(ifs);
+            ui = true;
+            break;
+        }
+        case '6': {
+            cout << "enter file name: ";
+            string fn;
+            cin >> fn;
+            ofs.open(fn, fstream::out);
+            ui = false;
+            jr.pack(ofs);
+            ui = true;
+            break;
+        }
+        case '7': {
             ui = false;
             break;
         }
@@ -81,7 +101,7 @@ void interact(Journal& jr) {
             ok = false;
         }
     }
-    if (ok) cout << "success" << endl;
+    if (ok) cout << GREEN << "success" << RESET << endl;
 }
 
 Journal::Journal() {
